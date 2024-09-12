@@ -55,7 +55,8 @@ def main():
         if html_content:
             with col2:
                 st.header("HTML Preview")
-                st.markdown(html_content, unsafe_allow_html=True)
+                with st.expander("Show HTML Preview", expanded=False):
+                    st.markdown(html_content, unsafe_allow_html=True)
 
                 font_size = st.slider('Select font size', min_value=10, max_value=36, value=20)
                 font_family = st.selectbox('Select font family', options=['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana'])
