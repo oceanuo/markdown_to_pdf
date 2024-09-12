@@ -25,9 +25,6 @@ def convert_markdown_to_html(markdown_text):
         import re
         html_content = re.sub(r'<pre><code class="language-(\w+)">(.*?)</code></pre>', highlight_code, html_content, flags=re.DOTALL)
         
-        # Convert inline code (single backticks) to <code> tags
-        html_content = re.sub(r'`([^`\n]+)`', r'<code>\1</code>', html_content)
-        
         return html_content
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
