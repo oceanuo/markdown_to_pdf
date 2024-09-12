@@ -49,38 +49,13 @@ def main():
         else:
             markdown_text = st.text_area("Enter Markdown text here", height=400)
 
-        if markdown_text:
-            html_content = convert_markdown_to_html(markdown_text)
-
-            if html_content:
-                pdf_options = {
-                    # ... (keep existing pdf_options)
-                }
-
-                pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
-
-                if pdf_bytes:
-                    pdf_preview_io = io.BytesIO(pdf_bytes)
-                    pdf_preview_io.seek(0)
-
-                    st.download_button(
-                        label="Download PDF",
-                        data=pdf_preview_io,
-                        file_name="converted.pdf",
-                        mime="application/pdf",
-                        key="pdf_preview_download_button"
-                    )
-                else:
-                    st.write("Failed to generate PDF.")
-
     if markdown_text:
         html_content = convert_markdown_to_html(markdown_text)
 
         if html_content:
             with col2:
                 st.header("HTML Preview")
-                with st.expander("Show Preview", expanded=True):
-                    st.markdown(html_content, unsafe_allow_html=True)
+                st.markdown(html_content, unsafe_allow_html=True)
 
                 font_size = st.slider('Select font size', min_value=10, max_value=36, value=20)
                 font_family = st.selectbox('Select font family', options=['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana'])
