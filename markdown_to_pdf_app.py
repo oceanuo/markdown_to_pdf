@@ -22,6 +22,7 @@ def convert_markdown_to_html(markdown_text):
             formatter = HtmlFormatter(style='default', noclasses=True)
             return highlight(code, lexer, formatter)
         
+        import re
         html_content = re.sub(r'<pre><code class="language-(\w+)">(.*?)</code></pre>', highlight_code, html_content, flags=re.DOTALL)
         
         # Convert inline code (single backticks) to <code> tags
