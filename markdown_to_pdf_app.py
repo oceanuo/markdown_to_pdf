@@ -27,7 +27,7 @@ def convert_markdown_to_html(markdown_text):
         html_content = re.sub(r'<pre><code class="language-(\w+)">(.*?)</code></pre>', highlight_code, html_content, flags=re.DOTALL)
         
         # Handle single backtick inline code
-        html_content = re.sub(r'<code>(.*?)</code>', lambda m: f'<code style="padding: 2px 4px; border-radius: 4px;">{m.group(1)}</code>', html_content)
+        html_content = re.sub(r'<code>(.*?)</code>', lambda m: f'<code style="background-color: #f0f0f0; padding: 2px 4px; border-radius: 4px;">{m.group(1)}</code>', html_content)
         
         return html_content
     except Exception as e:
