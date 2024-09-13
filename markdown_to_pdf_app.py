@@ -2,30 +2,11 @@ import streamlit as st
 import markdown2
 import pdfkit
 import io
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import HtmlFormatter
 
 def convert_markdown_to_html(markdown_text):
     try:
-        # Convert Markdown to HTML with table support and code blocks
+        # Convert Markdown to HTML with table support
         html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks"])
-        
-        # Add syntax highlighting to code blocks
-        def highlight_code(match):
-            lang = match.group(1) or 'text'
-            code = match.group(2)
-            try:
-                lexer = get_lexer_by_name(lang, stripall=True)
-            except ValueError:
-                lexer = get_lexer_by_name('text', stripall=True)
-            formatter = HtmlFormatter(style='default', noclasses=True)
-            return highlight(code, lexer, formatter)
-        
-        import re
-        # Handle triple backtick code blocks
-        html_content = re.sub(r'<pre><code class="language-(\w+)">(.*?)</code></pre>', highlight_code, html_content, flags=re.DOTALL)
-        
         return html_content
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
@@ -52,8 +33,7 @@ def main():
         if html_content:
             with col2:
                 st.header("HTML Preview")
-                with st.expander("Show HTML Preview", expanded=False):
-                    st.markdown(html_content, unsafe_allow_html=True)
+                st.markdown(html_content, unsafe_allow_html=True)
 
                 font_size = st.slider('Select font size', min_value=10, max_value=36, value=20)
                 font_family = st.selectbox('Select font family', options=['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana'])
@@ -66,17 +46,27 @@ def main():
                         font-size: {font_size}px;
                         line-height: {line_height};
                     }}
-                    /* ... (other CSS remains the same) ... */
-                    pre {{
-                        background-color: #f5f5f5;
-                        border: 1px solid #ccc;
-                        border-radius: 4px;
-                        padding: 10px;
-                        overflow-x: auto;
+                    p {{
+                        margin-bottom: 1em;
                     }}
-                    code {{
-                        font-family: 'Courier New', Courier, monospace;
-                        font-size: 0.9em;
+                    ol {{
+                        padding-left: 20px;
+                    }}
+                    li {{
+                        margin-bottom: 0.5em;
+                    }}
+                    table {{
+                        border-collapse: collapse;
+                        width: 100%;
+                        margin-bottom: 1em;
+                    }}
+                    th, td {{
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }}
+                    th {{
+                        background-color: #f2f2f2;
                     }}
                 </style>
                 """
