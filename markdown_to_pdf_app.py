@@ -29,6 +29,31 @@ def convert_markdown_to_html(markdown_text):
         # Handle single backtick inline code
         html_content = re.sub(r'<code>(.*?)</code>', lambda m: f'<code style="background-color: #f0f0f0; padding: 2px 4px; border-radius: 4px;">{m.group(1)}</code>', html_content)
         
+        # Add CSS for table styling
+        table_css = """
+        <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1em;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        </style>
+        """
+        
+        html_content = table_css + html_content
+        
         return html_content
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
