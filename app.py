@@ -31,7 +31,7 @@ def main():
                 st.subheader("PDF Settings")
                 with st.expander("Customize PDF", expanded=True):
                     font_size = st.slider('Font size', min_value=10, max_value=36, value=20)
-                    font_family = st.text_input('Font family', value='Arial')
+                    font_family = st.text_input('Font family')
                     line_height = st.slider('Line height', min_value=1.0, max_value=2.0, value=2.0, step=0.1)
                     page_size = st.selectbox('Page size', options=['A4', 'Letter', 'Legal'])
 
@@ -41,7 +41,7 @@ def main():
                     css = f"""
                     <style>
                         body {{
-                            font-family: {font_family}, sans-serif;
+                            font-family: {font_family};
                             font-size: {font_size}px;
                             line-height: {line_height};
                         }}
