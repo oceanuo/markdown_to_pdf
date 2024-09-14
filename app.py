@@ -5,7 +5,7 @@ import io
 
 def convert_markdown_to_html(markdown_text):
     try:
-        html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks"])
+        html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks", "codehilite"])
         return html_content
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
@@ -69,10 +69,23 @@ def main():
                             text-align: left;
                         }}
                         th {{ background-color: #f2f2f2; }}
+                        pre, code {{
+                            background-color: #f5f5f5;
+                            border: 1px solid #ccc;
+                            border-radius: 4px;
+                            padding: 10px;
+                            font-family: monospace;
+                            white-space: pre-wrap;
+                            word-wrap: break-word;
+                        }}
+                        pre code {{
+                            border: none;
+                            padding: 0;
+                        }}
                     </style>
                     """
 
-                    html_preview = f"{css}<div style='background-color: white;'>{html_content}</div>"
+                    html_preview = f"{css}<div>{html_content}</div>"
 
                     pdf_options = {
                         'quiet': '',
