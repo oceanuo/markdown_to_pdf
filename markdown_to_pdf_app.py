@@ -13,31 +13,33 @@ def convert_markdown_to_html(markdown_text):
         return None
 
 def main():
-    st.title("Markdown to PDF App")
+    st.set_page_config(page_title="Markdown to PDF Converter", layout="wide")
+    
+    st.title("Markdown to PDF Converter")
+    st.markdown("---")
 
-    uploaded_file = st.sidebar.file_uploader("Upload a Markdown file", type=["md"])
+    col1, col2 = st.columns([3, 2])
 
-    col1, col2 = st.columns(2)
-
-    markdown_text = ""
     with col1:
-        st.header("Input Markdown")
-        if uploaded_file is not None:
-            markdown_text = uploaded_file.read().decode("utf-8")
-        else:
-            markdown_text = st.text_area("Enter Markdown text here", height=400)
+        st.subheader("Input Markdown")
+        markdown_text = st.text_area("Enter your Markdown text here", height=400, key="markdown_input")
 
     if markdown_text:
         html_content = convert_markdown_to_html(markdown_text)
 
         if html_content:
             with col2:
-                st.header("HTML Preview")
-                st.markdown(html_content, unsafe_allow_html=True)
+                st.subheader("PDF Settings")
+                with st.expander("Customize PDF", expanded=True):
+                    font_size = st.slider('Font size', min_value=10, max_value=36, value=14)
+                    font_family = st.selectbox('Font family', options=['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana'])
+                    line_height = st.slider('Line height', min_value=1.0, max_value=2.0, value=1.5, step=0.1)
+                    page_size = st.selectbox('Page size', options=['A4', 'Letter', 'Legal'])
 
-                font_size = st.slider('Select font size', min_value=10, max_value=36, value=20)
-                font_family = st.selectbox('Select font family', options=['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana'])
-                line_height = st.slider('Select line height', min_value=1.0, max_value=2.0, value=2.0, step=0.1)
+                st.markdown("---")
+                st.subheader("Preview and Download")
+                with st.expander("HTML Preview", expanded=False):
+                    st.markdown(html_content, unsafe_allow_html=True)
 
                 css = f"""
                 <style>
@@ -46,15 +48,9 @@ def main():
                         font-size: {font_size}px;
                         line-height: {line_height};
                     }}
-                    p {{
-                        margin-bottom: 1em;
-                    }}
-                    ol {{
-                        padding-left: 20px;
-                    }}
-                    li {{
-                        margin-bottom: 0.5em;
-                    }}
+                    p {{ margin-bottom: 1em; }}
+                    ol, ul {{ padding-left: 20px; }}
+                    li {{ margin-bottom: 0.5em; }}
                     table {{
                         border-collapse: collapse;
                         width: 100%;
@@ -65,18 +61,11 @@ def main():
                         padding: 8px;
                         text-align: left;
                     }}
-                    th {{
-                        background-color: #f2f2f2;
-                    }}
+                    th {{ background-color: #f2f2f2; }}
                 </style>
                 """
 
-                html_preview = f"""
-                {css}
-                <div style="background-color: white;">
-                    {html_content}
-                </div>
-                """
+                html_preview = f"{css}<div style='background-color: white;'>{html_content}</div>"
 
                 pdf_options = {
                     'quiet': '',
@@ -87,12 +76,9 @@ def main():
                     'margin-bottom': '20mm',
                     'margin-left': '20mm',
                     'encoding': "UTF-8",
-                    'custom-header' : [
-                        ('Accept-Encoding', 'gzip')
-                    ],
-                    'no-outline': None,
+                    'custom-header': [('Accept-Encoding', 'gzip')],
                     'zoom': 1,
-                    'page-size': 'Letter',
+                    'page-size': page_size,
                     'minimum-font-size': font_size,
                 }
 
@@ -107,10 +93,15 @@ def main():
                         data=pdf_preview_io,
                         file_name="converted.pdf",
                         mime="application/pdf",
-                        key="pdf_preview_download_button"
+                        key="pdf_preview_download_button",
+                        use_container_width=True,
                     )
                 else:
-                    st.write("Failed to generate PDF.")
+                    st.error("Failed to generate PDF. Please check your input and try again.")
+
+    else:
+        with col2:
+            st.info("Enter some Markdown text to see the preview and generate a PDF.")
 
 if __name__ == "__main__":
     main()
