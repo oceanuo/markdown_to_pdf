@@ -32,7 +32,7 @@ def main():
                 st.subheader("PDF Settings")
                 with st.expander("Customize PDF", expanded=True):
                     font_size = st.slider('Font size', min_value=10, max_value=36, value=14)
-                    font_family = st.selectbox('Font family', options=['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana'])
+                    font_family = st.selectbox('Font', options=['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana'])
                     line_height = st.slider('Line height', min_value=1.0, max_value=2.0, value=1.5, step=0.1)
                     page_size = st.selectbox('Page size', options=['A4', 'Letter', 'Legal'])
 
@@ -44,7 +44,7 @@ def main():
                     css = f"""
                     <style>
                         body {{
-                            font-family: {font_family}, sans-serif;
+                            font-family: '{font_family}', sans-serif;
                             font-size: {font_size}px;
                             line-height: {line_height};
                         }}
@@ -80,7 +80,11 @@ def main():
                         'zoom': 1,
                         'page-size': page_size,
                         'minimum-font-size': font_size,
+                        'enable-local-file-access': None,
                     }
+
+                    # Add this line to set the default font
+                    pdf_options['--default-font'] = font_family
 
                     pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
 
