@@ -88,6 +88,7 @@ def main():
                             file_name="converted.pdf",
                             mime="application/pdf",
                             key="pdf_download_button",
+                            use_container_width=True  # 添加这一行
                         )
                         st.success("PDF generated successfully. Click the download button above to save it.")
                     else:
