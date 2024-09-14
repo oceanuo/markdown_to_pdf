@@ -31,12 +31,12 @@ def main():
             with col2:
                 st.subheader("PDF Settings")
                 with st.expander("Customize PDF", expanded=True):
-                    font_size = st.slider('Font size', min_value=10, max_value=36, value=14)
+                    font_size = st.slider('Font size', min_value=10, max_value=36, value=20)
                     font_family = st.selectbox('Font family', options=['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana'])
-                    line_height = st.slider('Line height', min_value=1.0, max_value=2.0, value=1.5, step=0.1)
+                    line_height = st.slider('Line height', min_value=1.0, max_value=2.0, value=2.0, step=0.1)
                     page_size = st.selectbox('Page size', options=['A4', 'Letter', 'Legal'])
 
-                # Move the download button here
+                # 修改这部分
                 st.markdown("---")
                 st.subheader("Generate PDF")
                 if st.button("Generate and Download PDF", use_container_width=True):
@@ -85,16 +85,15 @@ def main():
                     pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
 
                     if pdf_bytes:
-                        pdf_preview_io = io.BytesIO(pdf_bytes)
-                        pdf_preview_io.seek(0)
-
+                        # 直接触发下载，而不是创建新的下载按钮
                         st.download_button(
                             label="Download PDF",
-                            data=pdf_preview_io,
+                            data=pdf_bytes,
                             file_name="converted.pdf",
                             mime="application/pdf",
-                            key="pdf_preview_download_button",
+                            key="pdf_download_button",
                         )
+                        st.success("PDF generated successfully. Click the download button above to save it.")
                     else:
                         st.error("Failed to generate PDF. Please check your input and try again.")
 
