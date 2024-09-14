@@ -30,18 +30,22 @@ def main():
             with col2:
                 st.subheader("PDF Settings")
                 with st.expander("Customize PDF", expanded=True):
-                    font_size = st.slider('Font size', min_value=10, max_value=36, value=20)
-                    font_family = st.text_input('Font family')
-                    line_height = st.slider('Line height', min_value=1.0, max_value=2.0, value=2.0, step=0.1)
-                    page_size = st.selectbox('Page size', options=['A4', 'Letter', 'Legal'])
+                    font_size = st.text_input('Font size', value='20')
+                    line_height = st.text_input('Line height', value='2.0')
 
                 st.markdown("---")
                 st.subheader("Generate PDF")
                 if st.button("Generate and Download PDF", use_container_width=True):
+                    try:
+                        font_size = int(font_size)
+                        line_height = float(line_height)
+                    except ValueError:
+                        st.error("Invalid input for font size or line height. Please enter numeric values.")
+                        return
+
                     css = f"""
                     <style>
                         body {{
-                            font-family: {font_family};
                             font-size: {font_size}px;
                             line-height: {line_height};
                         }}
@@ -75,7 +79,7 @@ def main():
                         'encoding': "UTF-8",
                         'custom-header': [('Accept-Encoding', 'gzip')],
                         'zoom': 1,
-                        'page-size': page_size,
+                        # Removed 'page-size' option
                         'minimum-font-size': font_size,
                     }
 
