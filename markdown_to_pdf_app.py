@@ -36,68 +36,72 @@ def main():
                     line_height = st.slider('Line height', min_value=1.0, max_value=2.0, value=1.5, step=0.1)
                     page_size = st.selectbox('Page size', options=['A4', 'Letter', 'Legal'])
 
+                # Move the download button here
                 st.markdown("---")
-                st.subheader("Preview and Download")
+                st.subheader("Generate PDF")
+                if st.button("Generate and Download PDF", use_container_width=True):
+                    # Generate PDF
+                    css = f"""
+                    <style>
+                        body {{
+                            font-family: {font_family}, sans-serif;
+                            font-size: {font_size}px;
+                            line-height: {line_height};
+                        }}
+                        p {{ margin-bottom: 1em; }}
+                        ol, ul {{ padding-left: 20px; }}
+                        li {{ margin-bottom: 0.5em; }}
+                        table {{
+                            border-collapse: collapse;
+                            width: 100%;
+                            margin-bottom: 1em;
+                        }}
+                        th, td {{
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }}
+                        th {{ background-color: #f2f2f2; }}
+                    </style>
+                    """
+
+                    html_preview = f"{css}<div style='background-color: white;'>{html_content}</div>"
+
+                    pdf_options = {
+                        'quiet': '',
+                        'no-outline': None,
+                        'dpi': 300,
+                        'margin-top': '20mm',
+                        'margin-right': '20mm',
+                        'margin-bottom': '20mm',
+                        'margin-left': '20mm',
+                        'encoding': "UTF-8",
+                        'custom-header': [('Accept-Encoding', 'gzip')],
+                        'zoom': 1,
+                        'page-size': page_size,
+                        'minimum-font-size': font_size,
+                    }
+
+                    pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
+
+                    if pdf_bytes:
+                        pdf_preview_io = io.BytesIO(pdf_bytes)
+                        pdf_preview_io.seek(0)
+
+                        st.download_button(
+                            label="Download PDF",
+                            data=pdf_preview_io,
+                            file_name="converted.pdf",
+                            mime="application/pdf",
+                            key="pdf_preview_download_button",
+                        )
+                    else:
+                        st.error("Failed to generate PDF. Please check your input and try again.")
+
+                st.markdown("---")
+                st.subheader("Preview")
                 with st.expander("HTML Preview", expanded=False):
                     st.markdown(html_content, unsafe_allow_html=True)
-
-                css = f"""
-                <style>
-                    body {{
-                        font-family: {font_family}, sans-serif;
-                        font-size: {font_size}px;
-                        line-height: {line_height};
-                    }}
-                    p {{ margin-bottom: 1em; }}
-                    ol, ul {{ padding-left: 20px; }}
-                    li {{ margin-bottom: 0.5em; }}
-                    table {{
-                        border-collapse: collapse;
-                        width: 100%;
-                        margin-bottom: 1em;
-                    }}
-                    th, td {{
-                        border: 1px solid #ddd;
-                        padding: 8px;
-                        text-align: left;
-                    }}
-                    th {{ background-color: #f2f2f2; }}
-                </style>
-                """
-
-                html_preview = f"{css}<div style='background-color: white;'>{html_content}</div>"
-
-                pdf_options = {
-                    'quiet': '',
-                    'no-outline': None,
-                    'dpi': 300,
-                    'margin-top': '20mm',
-                    'margin-right': '20mm',
-                    'margin-bottom': '20mm',
-                    'margin-left': '20mm',
-                    'encoding': "UTF-8",
-                    'custom-header': [('Accept-Encoding', 'gzip')],
-                    'zoom': 1,
-                    'page-size': page_size,
-                    'minimum-font-size': font_size,
-                }
-
-                pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
-
-                if pdf_bytes:
-                    pdf_preview_io = io.BytesIO(pdf_bytes)
-                    pdf_preview_io.seek(0)
-
-                    st.download_button(
-                        label="Download PDF",
-                        data=pdf_preview_io,
-                        file_name="converted.pdf",
-                        mime="application/pdf",
-                        key="pdf_preview_download_button",
-                        use_container_width=True,
-                    )
-                else:
-                    st.error("Failed to generate PDF. Please check your input and try again.")
 
     else:
         with col2:
