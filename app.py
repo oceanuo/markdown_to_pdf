@@ -5,7 +5,6 @@ import io
 
 def convert_markdown_to_html(markdown_text):
     try:
-        # Convert Markdown to HTML with table support
         html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks"])
         return html_content
     except Exception as e:
@@ -36,11 +35,9 @@ def main():
                     line_height = st.slider('Line height', min_value=1.0, max_value=2.0, value=2.0, step=0.1)
                     page_size = st.selectbox('Page size', options=['A4', 'Letter', 'Legal'])
 
-                # 修改这部分
                 st.markdown("---")
                 st.subheader("Generate PDF")
                 if st.button("Generate and Download PDF", use_container_width=True):
-                    # Generate PDF
                     css = f"""
                     <style>
                         body {{
@@ -85,13 +82,14 @@ def main():
                     pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
 
                     if pdf_bytes:
-                        # 使用 st.download() 直接触发下载
-                        st.download(
-                            pdf_bytes,
+                        st.download_button(
+                            label="Download PDF",
+                            data=pdf_bytes,
                             file_name="converted.pdf",
-                            mime="application/pdf"
+                            mime="application/pdf",
+                            key="pdf_download_button",
                         )
-                        st.success("PDF generated and download started.")
+                        st.success("PDF generated successfully. Click the download button above to save it.")
                     else:
                         st.error("Failed to generate PDF. Please check your input and try again.")
 
