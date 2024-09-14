@@ -41,7 +41,7 @@ def main():
                     css = f"""
                     <style>
                         body {{
-                            font-family: {font_family}, sans-serif;
+                            font-family: {font_family};
                             font-size: {font_size}px;
                             line-height: {line_height};
                         }}
