@@ -85,15 +85,13 @@ def main():
                     pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
 
                     if pdf_bytes:
-                        # 直接触发下载，而不是创建新的下载按钮
-                        st.download_button(
-                            label="Download PDF",
-                            data=pdf_bytes,
+                        # 使用 st.download() 直接触发下载
+                        st.download(
+                            pdf_bytes,
                             file_name="converted.pdf",
-                            mime="application/pdf",
-                            key="pdf_download_button",
+                            mime="application/pdf"
                         )
-                        st.success("PDF generated successfully. Click the download button above to save it.")
+                        st.success("PDF generated and download started.")
                     else:
                         st.error("Failed to generate PDF. Please check your input and try again.")
 
