@@ -32,6 +32,12 @@ def main():
                 with st.expander("Customize PDF", expanded=True):
                     font_size = st.text_input('Font size', value='20')
                     line_height = st.text_input('Line height', value='2.0')
+                    
+                    file_name_col, pdf_suffix_col = st.columns([4, 1])
+                    with file_name_col:
+                        file_name = st.text_input('File name', value='converted')
+                    with pdf_suffix_col:
+                        st.text_input('', value='.pdf', disabled=True)
 
                 st.markdown("---")
                 st.subheader("Generate PDF")
@@ -79,7 +85,6 @@ def main():
                         'encoding': "UTF-8",
                         'custom-header': [('Accept-Encoding', 'gzip')],
                         'zoom': 1,
-                        # Removed 'page-size' option
                         'minimum-font-size': font_size,
                     }
 
@@ -89,7 +94,7 @@ def main():
                         st.download_button(
                             label="Download PDF",
                             data=pdf_bytes,
-                            file_name="converted.pdf",
+                            file_name=f"{file_name}.pdf",
                             mime="application/pdf",
                             key="pdf_download_button",
                             use_container_width=True  
