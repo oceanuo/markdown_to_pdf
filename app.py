@@ -17,47 +17,27 @@ def main():
     st.title("Markdown to PDF Converter")
     st.markdown("---")
 
-    # Initialize session state for the list
-    if 'custom_list' not in st.session_state:
-        st.session_state.custom_list = []
-
     col1, col2 = st.columns([3, 2])
 
     with col1:
         st.subheader("Input Markdown")
-        markdown_text = st.text_area("Enter your Markdown text here", height=300, key="markdown_input")
+        markdown_text = st.text_area("Enter your Markdown text here", height=400, key="markdown_input")
 
-        # Add custom list functionality
-        st.subheader("Custom List")
-        new_item = st.text_input("Add new item")
-        if st.button("Add"):
-            st.session_state.custom_list.append(new_item)
-            st.experimental_rerun()
-
-        # Display and allow deletion of list items
-        for i, item in enumerate(st.session_state.custom_list):
-            st.text(item)
-            if st.button("Delete", key=f"delete_{i}"):
-                st.session_state.custom_list.pop(i)
-                st.experimental_rerun()
-
-    if markdown_text or st.session_state.custom_list:
+    if markdown_text:
         html_content = convert_markdown_to_html(markdown_text)
-
-        # Add custom list to HTML content
-        if st.session_state.custom_list:
-            html_content += "<h3>Custom List</h3><ul>"
-            for item in st.session_state.custom_list:
-                html_content += f"<li>{item}</li>"
-            html_content += "</ul>"
 
         if html_content:
             with col2:
                 st.subheader("PDF Settings")
-                font_size = st.text_input('Font size', value='20')
-                line_height = st.text_input('Line height', value='2.0')
-                file_name = st.text_input('File name', value='converted')
-                st.text_input('', value='.pdf', disabled=True)
+                with st.expander("Customize PDF", expanded=True):
+                    font_size = st.text_input('Font size', value='20')
+                    line_height = st.text_input('Line height', value='2.0')
+                    
+                    file_name_col, pdf_suffix_col = st.columns([4, 1])
+                    with file_name_col:
+                        file_name = st.text_input('File name', value='converted')
+                    with pdf_suffix_col:
+                        st.text_input('', value='.pdf', disabled=True)
 
                 st.markdown("---")
                 st.subheader("Generate PDF")
