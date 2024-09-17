@@ -36,9 +36,8 @@ def main():
 
         # Display and allow deletion of list items
         for i, item in enumerate(st.session_state.custom_list):
-            col1, col2 = st.columns([4, 1])
-            col1.text(item)
-            if col2.button("Delete", key=f"delete_{i}"):
+            st.text(item)
+            if st.button("Delete", key=f"delete_{i}"):
                 st.session_state.custom_list.pop(i)
                 st.experimental_rerun()
 
@@ -55,15 +54,10 @@ def main():
         if html_content:
             with col2:
                 st.subheader("PDF Settings")
-                with st.expander("Customize PDF", expanded=True):
-                    font_size = st.text_input('Font size', value='20')
-                    line_height = st.text_input('Line height', value='2.0')
-                    
-                    file_name_col, pdf_suffix_col = st.columns([4, 1])
-                    with file_name_col:
-                        file_name = st.text_input('File name', value='converted')
-                    with pdf_suffix_col:
-                        st.text_input('', value='.pdf', disabled=True)
+                font_size = st.text_input('Font size', value='20')
+                line_height = st.text_input('Line height', value='2.0')
+                file_name = st.text_input('File name', value='converted')
+                st.text_input('', value='.pdf', disabled=True)
 
                 st.markdown("---")
                 st.subheader("Generate PDF")
