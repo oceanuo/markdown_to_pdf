@@ -6,7 +6,8 @@ import re
 
 def preserve_urls(md):
     def replace_url(match):
-        return f'<a href="{match.group(0)}">{match.group(0)}</a>'
+        url = match.group(0)
+        return f'<{url}>'
     
     url_pattern = r'https?://[^\s)"]+'
     return re.sub(url_pattern, replace_url, md)
@@ -94,6 +95,9 @@ def main():
                         pre code {{
                             border: none;
                             padding: 0;
+                        }}
+                        a {{
+                            text-decoration: underline;
                         }}
                     </style>
                     """
