@@ -2,24 +2,10 @@ import streamlit as st
 import markdown2
 import pdfkit
 import io
-import re
-
-def preserve_urls(md):
-    def replace_url(match):
-        url = match.group(0)
-        return f'<{url}>'
-    
-    url_pattern = r'https?://[^\s)"]+'
-    return re.sub(url_pattern, replace_url, md)
 
 def convert_markdown_to_html(markdown_text):
     try:
-        # Apply URL preservation before markdown conversion
-        preserved_markdown = preserve_urls(markdown_text)
-        
-        html_content = markdown2.markdown(preserved_markdown, extras=[
-            "tables", "break-on-newline", "fenced-code-blocks", "codehilite"
-        ])
+        html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks", "codehilite"])
         return html_content
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
@@ -31,14 +17,40 @@ def main():
     st.title("Markdown to PDF Converter")
     st.markdown("---")
 
+    # Initialize session state for the list
+    if 'custom_list' not in st.session_state:
+        st.session_state.custom_list = []
+
     col1, col2 = st.columns([3, 2])
 
     with col1:
         st.subheader("Input Markdown")
-        markdown_text = st.text_area("Enter your Markdown text here", height=400, key="markdown_input")
+        markdown_text = st.text_area("Enter your Markdown text here", height=300, key="markdown_input")
 
-    if markdown_text:
+        # Add custom list functionality
+        st.subheader("Custom List")
+        new_item = st.text_input("Add new item")
+        if st.button("Add"):
+            st.session_state.custom_list.append(new_item)
+            st.experimental_rerun()
+
+        # Display and allow deletion of list items
+        for i, item in enumerate(st.session_state.custom_list):
+            col1, col2 = st.columns([4, 1])
+            col1.text(item)
+            if col2.button("Delete", key=f"delete_{i}"):
+                st.session_state.custom_list.pop(i)
+                st.experimental_rerun()
+
+    if markdown_text or st.session_state.custom_list:
         html_content = convert_markdown_to_html(markdown_text)
+
+        # Add custom list to HTML content
+        if st.session_state.custom_list:
+            html_content += "<h3>Custom List</h3><ul>"
+            for item in st.session_state.custom_list:
+                html_content += f"<li>{item}</li>"
+            html_content += "</ul>"
 
         if html_content:
             with col2:
@@ -95,9 +107,6 @@ def main():
                         pre code {{
                             border: none;
                             padding: 0;
-                        }}
-                        a {{
-                            text-decoration: underline;
                         }}
                     </style>
                     """
