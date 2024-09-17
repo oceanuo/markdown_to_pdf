@@ -17,8 +17,7 @@ def convert_markdown_to_html(markdown_text):
         preserved_markdown = preserve_urls(markdown_text)
         
         html_content = markdown2.markdown(preserved_markdown, extras=[
-            "tables", "break-on-newline", "fenced-code-blocks", "codehilite",
-            "link-patterns"
+            "tables", "break-on-newline", "fenced-code-blocks", "codehilite"
         ])
         return html_content
     except Exception as e:
