@@ -2,10 +2,24 @@ import streamlit as st
 import markdown2
 import pdfkit
 import io
+import re
+
+def preserve_urls(md):
+    def replace_url(match):
+        return f'<a href="{match.group(0)}">{match.group(0)}</a>'
+    
+    url_pattern = r'https?://[^\s)"]+'
+    return re.sub(url_pattern, replace_url, md)
 
 def convert_markdown_to_html(markdown_text):
     try:
-        html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks", "codehilite"])
+        # Apply URL preservation before markdown conversion
+        preserved_markdown = preserve_urls(markdown_text)
+        
+        html_content = markdown2.markdown(preserved_markdown, extras=[
+            "tables", "break-on-newline", "fenced-code-blocks", "codehilite",
+            "link-patterns"
+        ])
         return html_content
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
