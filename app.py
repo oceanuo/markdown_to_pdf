@@ -51,7 +51,12 @@ def main():
 
                     css = f"""
                     <style>
+                        @font-face {{
+                            font-family: 'Noto Sans';
+                            src: url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+                        }}
                         body {{
+                            font-family: 'Noto Sans', sans-serif;
                             font-size: {font_size}px;
                             line-height: {line_height};
                         }}
@@ -85,7 +90,7 @@ def main():
                     </style>
                     """
 
-                    html_preview = f"{css}<div>{html_content}</div>"
+                    html_preview = f"<html><head><meta charset='UTF-8'>{css}</head><body>{html_content}</body></html>"
 
                     pdf_options = {
                         'quiet': '',
@@ -99,6 +104,7 @@ def main():
                         'custom-header': [('Accept-Encoding', 'gzip')],
                         'zoom': 1,
                         'minimum-font-size': font_size,
+                        'enable-local-file-access': None,
                     }
 
                     pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
