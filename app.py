@@ -2,10 +2,15 @@ import streamlit as st
 import markdown2
 import pdfkit
 import io
+import re
 
 def convert_markdown_to_html(markdown_text):
     try:
         html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks", "codehilite"])
+        
+        # 为中文文本添加 lang="zh" 属性
+        html_content = re.sub(r'([\u4e00-\u9fff]+)', r'<span lang="zh">\1</span>', html_content)
+        
         return html_content
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
@@ -53,9 +58,11 @@ def main():
                     <style>
                         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap');
                         body {{
-                            font-family: 'Noto Sans SC';
                             font-size: {font_size}px;
                             line-height: {line_height};
+                        }}
+                        :lang(zh) {{
+                            font-family: 'Noto Sans SC', sans-serif;
                         }}
                         p {{ margin-bottom: 1em; }}
                         ol, ul {{ padding-left: 20px; }}
