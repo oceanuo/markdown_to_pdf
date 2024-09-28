@@ -2,11 +2,16 @@ import streamlit as st
 import markdown2
 import pdfkit
 import io
+import sys
+
+# 设置默认编码为 UTF-8
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def convert_markdown_to_html(markdown_text):
     try:
         html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks", "codehilite"])
-        return html_content
+        return html_content.encode('utf-8').decode('utf-8')
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
         return None
@@ -51,7 +56,9 @@ def main():
 
                     css = f"""
                     <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap');
                         body {{
+                            font-family: 'Noto Sans SC', sans-serif;
                             font-size: {font_size}px;
                             line-height: {line_height};
                         }}
@@ -99,6 +106,7 @@ def main():
                         'custom-header': [('Accept-Encoding', 'gzip')],
                         'zoom': 1,
                         'minimum-font-size': font_size,
+                        'enable-local-file-access': None,
                     }
 
                     pdf_bytes = pdfkit.from_string(html_preview, False, options=pdf_options)
