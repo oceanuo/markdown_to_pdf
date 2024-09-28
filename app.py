@@ -2,16 +2,11 @@ import streamlit as st
 import markdown2
 import pdfkit
 import io
-import sys
-
-# 设置默认编码为 UTF-8
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 def convert_markdown_to_html(markdown_text):
     try:
         html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks", "codehilite"])
-        return html_content.encode('utf-8').decode('utf-8')
+        return html_content
     except Exception as e:
         st.error(f"Error converting Markdown to HTML: {e}")
         return None
