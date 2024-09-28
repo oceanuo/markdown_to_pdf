@@ -53,7 +53,7 @@ def main():
                     <style>
                         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap');
                         body {{
-
+                            font-family: 'Noto Sans SC';
                             font-size: {font_size}px;
                             line-height: {line_height};
                         }}
