@@ -6,10 +6,15 @@ import re
 
 def convert_markdown_to_html(markdown_text):
     try:
+        # 先进行 Markdown 转换
         html_content = markdown2.markdown(markdown_text, extras=["tables", "break-on-newline", "fenced-code-blocks", "codehilite"])
         
-        # 为中文文本添加 lang="zh" 属性
-        html_content = re.sub(r'([\u4e00-\u9fff]+)', r'<span lang="zh">\1</span>', html_content)
+        # 修改正则表达式，避免影响已有的HTML标签
+        html_content = re.sub(
+            r'(>|^)([^<>]*[\u4e00-\u9fff]+[^<>]*?)(<|$)', 
+            r'\1<span lang="zh">\2</span>\3', 
+            html_content
+        )
         
         return html_content
     except Exception as e:
@@ -56,13 +61,21 @@ def main():
 
                     css = f"""
                     <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap');
+                        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
                         body {{
                             font-size: {font_size}px;
                             line-height: {line_height};
                         }}
                         :lang(zh) {{
                             font-family: 'Noto Sans SC', sans-serif;
+                        }}
+                        /* 确保加粗文本在中文中正常显示 */
+                        strong, b {{
+                            font-weight: 700 !important;
+                        }}
+                        /* 确保标题在中文中正常显示 */
+                        h1, h2, h3, h4, h5, h6 {{
+                            font-weight: 700 !important;
                         }}
                         p {{ margin-bottom: 1em; }}
                         ol, ul {{ padding-left: 20px; }}
